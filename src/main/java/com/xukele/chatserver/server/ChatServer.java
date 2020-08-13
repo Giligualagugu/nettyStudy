@@ -37,7 +37,10 @@ public class ChatServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) {
-                            socketChannel.pipeline().addLast(new StringDecoder(StandardCharsets.UTF_8), new StringEncoder(StandardCharsets.UTF_8), new ChatMessageHandler());
+                            socketChannel.pipeline()
+                                    .addLast(new StringDecoder(StandardCharsets.UTF_8))
+                                    .addLast(new StringEncoder(StandardCharsets.UTF_8))
+                                    .addLast(new ChatMessageHandler());
                         }
                     });
 

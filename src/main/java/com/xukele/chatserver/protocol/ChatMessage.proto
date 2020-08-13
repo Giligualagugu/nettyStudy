@@ -1,0 +1,9 @@
+syntax = "proto3";
+option java_package = "com.xukele.chatserver.protocol.pojo";
+option java_outer_classname = "ChatMessage";
+message ChatMessage {
+
+  int32 id = 1;// 1代表属性的序号,不是赋值;
+  string mess = 2;
+
+}
