@@ -26,6 +26,7 @@ public class DemoClient {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline()
                                     .addLast(new MyEncoder())
+                                    .addLast(new MyDecoder())
                                     .addLast(new ClientHandler());
                         }
                     });

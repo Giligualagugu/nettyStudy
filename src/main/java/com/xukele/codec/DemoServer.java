@@ -33,6 +33,7 @@ public class DemoServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline()
+                                    .addLast(new MyEncoder())
                                     .addLast(new MyDecoder())
                                     .addLast(new MyHandler());
                         }
