@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ChatServer {
 
-    public static int port = 8012;
+    public static final int SERVER_PORT = 8012;
 
     public static void main(String[] args) throws Exception {
 
@@ -43,10 +43,10 @@ public class ChatServer {
                         }
                     });
 
-            ChannelFuture channelFuture = bootstrap.bind(port).sync();
+            ChannelFuture channelFuture = bootstrap.bind(SERVER_PORT).sync();
             channelFuture.addListener(future1 -> {
                 if (future1.isSuccess()) {
-                    log.info("聊天服务器， 监听端口成功:{}", port);
+                    log.info("聊天服务器， 监听端口成功:{}", SERVER_PORT);
                 }
             });
 

@@ -25,7 +25,7 @@ public class ChatClient {
         EventLoopGroup group = new NioEventLoopGroup();
 
 
-        try {
+        try (Scanner scanner = new Scanner(System.in)) {
 
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.channel(NioSocketChannel.class)
@@ -40,7 +40,7 @@ public class ChatClient {
                         }
                     });
 
-            ChannelFuture localhost = bootstrap.connect("localhost", ChatServer.port).sync();
+            ChannelFuture localhost = bootstrap.connect("localhost", ChatServer.SERVER_PORT).sync();
 
             localhost.addListener(future -> {
                 if (future.isSuccess()) {
@@ -49,9 +49,6 @@ public class ChatClient {
             });
 
             Channel current = localhost.channel();
-            //输入;
-            Scanner scanner = new Scanner(System.in);
-
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 ChatMessagePojo.ChatMessage build = ChatMessagePojo.ChatMessage.newBuilder().setId(2).setMess(line).build();
