@@ -1,6 +1,7 @@
 package com.xukele.chatserver.server;
 
 import com.xukele.chatserver.handler.ChatMessageHandler;
+import com.xukele.chatserver.protocol.pojo.ChatMessagePojo;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,13 +10,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
-
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ChatServer {
@@ -38,8 +37,8 @@ public class ChatServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline()
-                                    .addLast(new StringDecoder(StandardCharsets.UTF_8))
-                                    .addLast(new StringEncoder(StandardCharsets.UTF_8))
+                                    .addLast(new ProtobufEncoder())
+                                    .addLast(new ProtobufDecoder(ChatMessagePojo.ChatMessage.getDefaultInstance()))
                                     .addLast(new ChatMessageHandler());
                         }
                     });

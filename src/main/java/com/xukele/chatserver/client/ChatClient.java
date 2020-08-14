@@ -1,6 +1,7 @@
 package com.xukele.chatserver.client;
 
 import com.xukele.chatserver.handler.ClientMessageHandler;
+import com.xukele.chatserver.protocol.pojo.ChatMessagePojo;
 import com.xukele.chatserver.server.ChatServer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -10,11 +11,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 @Slf4j
@@ -33,7 +33,10 @@ public class ChatClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new StringEncoder(StandardCharsets.UTF_8), new StringDecoder(StandardCharsets.UTF_8), new ClientMessageHandler());
+                            ch.pipeline()
+                                    .addLast(new ProtobufEncoder())
+                                    .addLast(new ProtobufDecoder(ChatMessagePojo.ChatMessage.getDefaultInstance()))
+                                    .addLast(new ClientMessageHandler());
                         }
                     });
 
@@ -51,7 +54,8 @@ public class ChatClient {
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                current.writeAndFlush(line);
+                ChatMessagePojo.ChatMessage build = ChatMessagePojo.ChatMessage.newBuilder().setId(2).setMess(line).build();
+                current.writeAndFlush(build);
             }
             localhost.channel().closeFuture().sync();
         } finally {

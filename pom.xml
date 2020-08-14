@@ -17,11 +17,18 @@
 
     <dependencies>
 
+        <!--    protobuf 依赖    -->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <version>3.12.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
+            <version>3.12.4</version>
+        </dependency>
+        <!--    protobuf 依赖  end  -->
 
         <dependency>
             <groupId>io.netty</groupId>
