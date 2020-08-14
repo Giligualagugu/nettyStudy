@@ -1,24 +1,18 @@
-package com.xukele.chatserver.client;
+package com.xukele.codec;
 
-import com.xukele.chatserver.handler.ClientMessageHandler;
-import com.xukele.chatserver.protocol.pojo.ChatMessagePojo;
-import com.xukele.chatserver.server.ChatServer;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.protobuf.ProtobufDecoder;
-import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Scanner;
 
 @Slf4j
-public class ChatClient {
+public class DemoClient {
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -31,28 +25,23 @@ public class ChatClient {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline()
-                                    .addLast(new ProtobufEncoder())
-                                    .addLast(new ProtobufDecoder(ChatMessagePojo.ChatMessage.getDefaultInstance()))
-                                    .addLast(new ClientMessageHandler());
+                                    .addLast(new MyEncoder())
+                                    .addLast(new ClientHandler());
                         }
                     });
-            ChannelFuture localhost = bootstrap.connect("localhost", ChatServer.SERVER_PORT).sync();
+            ChannelFuture localhost = bootstrap.connect("localhost", DemoServer.SERVER_PORT).sync();
             localhost.addListener(future -> {
                 if (future.isSuccess()) {
                     log.info("链接到server :{}", localhost.channel().remoteAddress());
                 }
             });
-            Channel current = localhost.channel();
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                ChatMessagePojo.ChatMessage build = ChatMessagePojo.ChatMessage.newBuilder().setId(2).setMess(line).build();
-                current.writeAndFlush(build);
-            }
+
+            localhost.channel().writeAndFlush(12341L);
+
             localhost.channel().closeFuture().sync();
         } finally {
 
             group.shutdownGracefully();
         }
-
     }
 }
